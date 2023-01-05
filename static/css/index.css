@@ -1,44 +1,44 @@
-*{
+* {
     font-family: Arial, Helvetica, sans-serif;
-    
+
 }
 
-body{
+body {
     background-color: rgb(209, 212, 232);
 }
 
-.navbar-section{
+.navbar-section {
     background-color: rgb(26, 30, 58);
     height: 30px;
     margin-left: 15px;
     display: flex;
     justify-content: space-between;
-    color:white
-    /* justify-content: space-between; */
+    color: white
+        /* justify-content: space-between; */
 }
 
-#category-section{
+#category-section {
     display: flex;
 }
 
-#site-logo{
+#site-logo {
     margin: 2px;
     padding: 0px 5px 0px 5px;
     font-size: 1.4rem;
     font-weight: bold;
     border: 1px white solid;
     margin-right: 10px;
-    color:white;
+    color: white;
 }
 
-.site-name{
+.site-name {
     padding: 4px;
     font-weight: bold;
     font-size: 1.4rem;
     margin: 0;
 }
 
-.navbar-menu{
+.navbar-menu {
     margin: 0;
     font-size: 1.2rem;
     width: 80%;
@@ -48,17 +48,17 @@ body{
     padding-top: 5px;
 }
 
-.menu{
+.menu {
     text-decoration: underline;
     padding: 0px 5px 0px 5px;
 }
 
-.menu-anchor{
-    color:white;
+.menu-anchor {
+    color: white;
     text-decoration: none;
 }
 
-#auth-section{
+#auth-section {
     margin-right: 10px;
 }
 
@@ -66,7 +66,7 @@ body{
 
 /* Main CSS */
 
-#menu-section{
+#menu-section {
     background-color: rgb(52, 53, 73);
     margin-left: 15px;
     /* background-color: gainsboro; */
@@ -76,6 +76,136 @@ body{
     margin-right: 15px;
 }
 
-#msg{
+#msg {
     padding: 10px;
+}
+
+/*css for Feed */
+
+/* Post styles */
+
+.feed {
+    margin: 16px;
+}
+
+.post {
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    padding: 16px;
+    width: 50%;
+}
+
+#post-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#upvote-icon {
+    font-size: 18px;
+    margin-right: 8px;
+    color: #333;
+}
+
+#title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #332;
+    text-decoration: none;
+    /* transition: color 0.2s; */
+}
+
+#src-url {
+    font-size: 14px;
+    color: #333;
+    margin-left: 8px;
+}
+
+#post-data {
+    display: flex;
+    justify-content: start;
+    font-size: 14px;
+    color: #333;
+}
+
+#author,
+#time-posted,
+#comments-count {
+    margin-right: 16px;
+}
+
+#upvotes-count {
+    margin-right: 5px;
+}
+
+/* Add hover effect to title */
+#title:hover {
+    color: #0079d3;
+}
+
+/* Add hover effect to upvote icon */
+#upvote-icon:hover {
+    color: #0079d3;
+    cursor: pointer;
+}
+
+
+/* CSS for submit form */
+/* Add some basic styles */
+.post-form {
+    width: 500px;
+    margin: 0 auto;
+    text-align: left;
+    font-size: 1em;
+    color: #333;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    resize: none;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    cursor: pointer;
+}
+
+/* Add a hover effect for the button */
+button:hover {
+    background-color: #0069d9;
+    /* cursor: ; */
+}
+
+/* Add a transition for the button */
+button {
+    transition: background-color 0.2s ease-in-out;
 }

@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    form {
+    #user-form {
         width: 300px;
         margin: auto;
         border: 1px solid #000;
@@ -15,7 +15,7 @@
         font-size: 18px;
     }
 
-    input[type="text"],
+    input[name="username"],
     input[type="password"] {
         width: 100%;
         height: 40px;
@@ -25,7 +25,7 @@
         box-sizing: border-box;
     }
 
-    input[type="submit"] {
+    #login-submit {
         width: 100%;
         height: 40px;
         padding: 0 10px;
@@ -36,12 +36,12 @@
 </style>
 <h2>This is LOGIN PAGE</h2>
 
-<form method="POST">
+<form id="user-form" method="POST">
     <label for="username">Username:</label><br>
     <input type="text" id="username" name="username"><br>
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password"><br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" id="login-submit" value="Submit">
 </form>
 
 
