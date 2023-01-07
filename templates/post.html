@@ -1,0 +1,114 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .post-details {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .post-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .post-content {
+        font-size: 18px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .upvote-icon {
+        float: right;
+        cursor: pointer;
+    }
+
+    .comments {
+        margin-top: 40px;
+    }
+
+    .comments h2 {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .comment {
+        margin-bottom: 20px;
+    }
+
+    .comment .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .comment {
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .comment .username {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .comment .comment-body {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .replies {
+        margin-top: 20px;
+    }
+
+    .reply {
+        margin-bottom: 10px;
+    }
+
+    .reply .reply-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+
+    .reply .username {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .reply .reply-body {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+</style>
+<div class="post-details">
+    <h1 class="post-title">{{post.title}}</h1>
+    <div class="post-content">{{post.content}}</div>
+    <div class="upvote-icon">
+        ^
+    </div>
+    <div class="comments">
+        <h2>Comments</h2>
+        <div class="comment">
+            <div class="comment-header">
+                <span class="username">Username</span>
+            </div>
+            <div class="comment-body">Comment body goes here</div>
+            <div class="replies">
+                <div class="reply">
+                    <div class="reply-header">
+                        <span class="username">Username</span>
+                    </div>
+                    <div class="reply-body">Reply body goes here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -5,11 +5,18 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
+from datetime import datetime
+from flask_humanize import Humanize
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, render_as_batch=True)
+humanize = Humanize(app)
+
+
+HUMANIZE_USE_UTC = True
+
 
 app.secret_key = "j54dsjdsd)021-jdsfjdkfddf?,/l.df"
 
@@ -23,13 +30,22 @@ def index():
     # users = User.query.all()
     # for user in users:
     #     print(user.username)
-    return render_template("index.html")
+    posts = Post.query.all()
+    now = datetime.now()
+    return render_template("index.html", posts=posts, now=now)
 
 
 @app.route("/<cat>")
 def topic(cat):
     """This view function is for Category posts page"""
     return render_template("topic.html", cat=cat)
+
+
+@app.route("/post/<postid>")
+def post(postid):
+    """This view function is for Post detail"""
+    post = Post.query.filter_by(id=postid).first()
+    return render_template("post.html", post=post)
 
 
 @app.route("/submit", methods=["GET", "POST"])
