@@ -130,9 +130,18 @@ body {
 }
 
 #author,
-#time-posted,
-#comments-count {
+#time-posted {
     margin-right: 16px;
+}
+
+#comments-count {
+    color: #332;
+    text-decoration: none;
+    margin-right: 16px;
+}
+
+#comments-count:hover {
+    text-decoration: underline;
 }
 
 #upvotes-count {
@@ -208,4 +217,9 @@ button:hover {
 /* Add a transition for the button */
 button {
     transition: background-color 0.2s ease-in-out;
+}
+
+/* To disable the href */
+a[disabled="disabled"] {
+    pointer-events: none;
 }

@@ -21,7 +21,7 @@ HUMANIZE_USE_UTC = True
 app.secret_key = "j54dsjdsd)021-jdsfjdkfddf?,/l.df"
 
 
-from models import User, Post
+from models import User, Post, Upvote, Comment
 
 
 @app.route("/")
@@ -32,7 +32,21 @@ def index():
     #     print(user.username)
     posts = Post.query.all()
     now = datetime.now()
-    return render_template("index.html", posts=posts, now=now)
+    upvoted_posts = []
+    print("tr")
+    if "username" in session:
+        print("tr 2")
+        author = User.query.filter_by(username=session["username"]).first()
+        for post in posts:
+            upvote = Upvote.query.filter_by(
+                post_id=post.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_posts.append(post.id)
+
+    return render_template(
+        "index.html", posts=posts, now=now, upvoted_posts=upvoted_posts
+    )
 
 
 @app.route("/<cat>")
@@ -44,8 +58,41 @@ def topic(cat):
 @app.route("/post/<postid>")
 def post(postid):
     """This view function is for Post detail"""
+    now = datetime.now()
     post = Post.query.filter_by(id=postid).first()
-    return render_template("post.html", post=post)
+    comments = Comment.query.filter_by(post_id=post.id).all()
+    return render_template("post.html", now=now, post=post, comments=comments)
+
+
+@app.route("/comment/<postid>", methods=["GET", "POST"])
+def comment(postid):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    text = request.form["text"]
+    author = User.query.filter_by(username=session["username"]).first()
+    new_comment = Comment(
+        text=text, author_id=author.id, post_id=postid, parent_id=None
+    )
+    db.session.add(new_comment)
+    db.session.commit()
+    return redirect(url_for("post", postid=postid))
+
+
+@app.route("/like/<postid>")
+def like(postid):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    post = Post.query.filter_by(id=postid).first()
+    author = User.query.filter_by(username=session["username"]).first()
+    upvotes = Upvote.query.filter_by(post=post, author=author).all()
+    if len(upvotes) == 0:
+        new_like = Upvote(author=author, post=post)
+        db.session.add(new_like)
+        db.session.commit()
+    else:
+        print(upvotes)
+        print("There is already likes by this user")
+    return redirect(url_for("index"))
 
 
 @app.route("/submit", methods=["GET", "POST"])

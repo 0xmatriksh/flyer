@@ -11,19 +11,19 @@
 </div>
 
 <div class="feed">
-    {{now}}
     {% for post in posts %}
     <div class="post">
         <div id="post-info">
-            <div id="upvote-icon">^</div>
+            <a href={{ url_for("like", postid=post.id) }} {% if post.id in upvoted_posts %} disabled="disabled" {% endif
+                %} id="upvote-icon">^</a>
             <a href={{ url_for("post", postid=post.id) }} id="title">{{post.title}}</a>
             <div id="src-url">(hello.com)</div>
         </div>
         <div id="post-data">
-            <div id="upvotes-count">{{post.upvotes}} points</div>
+            <div id="upvotes-count">{{post.upvotes|length}} points</div>
             <div id="author">by {{post.author.username}}</div>
-            <div id="time-posted">{{ (post.created_at - now)|humanize() }}</div>
-            <div id="comments-count">57 comments</div>
+            <div id="time-posted">{{ (now - post.created_at)|humanize() }}</div>
+            <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
         </div>
     </div>
     {% endfor %}

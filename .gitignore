@@ -5,3 +5,4 @@ __pycache__/
 instance/
 dbtest.py
 migrations/
+TODO.TXT
