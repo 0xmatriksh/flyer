@@ -11,6 +11,10 @@
 
     <!-- Code for CSS Link -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    <!-- Code for CSS Link for respective page -->
+    {% block titlecontent %}
+    {% endblock %}
 </head>
 
 <body>

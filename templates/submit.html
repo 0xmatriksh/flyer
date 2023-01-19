@@ -1,5 +1,9 @@
 {% extends 'main.html' %}
 
+{% block titlecontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit.css') }}">
+{% endblock %}
+
 {% block content %}
 <h2>This is SUBMIT PAGE</h2>
 

@@ -1,174 +1,8 @@
 {% extends 'main.html' %}
 
-<style>
-    .post-details {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .post-title {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 16px;
-    }
-
-    .post-content {
-        font-size: 18px;
-        line-height: 1.5;
-        margin-bottom: 16px;
-    }
-
-    .upvote-icon {
-        float: right;
-        cursor: pointer;
-    }
-
-    .comments {
-        margin-top: 40px;
-    }
-
-    .comments h2 {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .comment {
-        margin-bottom: 20px;
-    }
-
-    .comment .comment-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .comment {
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .comment .username {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .comment .comment-body {
-        font-size: 16px;
-        line-height: 1.5;
-    }
-
-    .replies {
-        margin-top: 20px;
-    }
-
-    .reply {
-        margin-bottom: 10px;
-    }
-
-    .reply .reply-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-
-    .reply .username {
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .reply .reply-body {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    .post-details {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .post-title {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 16px;
-    }
-
-    .post-content {
-        font-size: 18px;
-        line-height: 1.5;
-        margin-bottom: 16px;
-    }
-
-    .upvote-icon {
-        float: right;
-        cursor: pointer;
-    }
-
-    .comments {
-        margin-top: 25px;
-    }
-
-    .comments h2 {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 16px;
-    }
-
-    .comment {
-        margin-bottom: 20px;
-    }
-
-    .comment .comment-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .comment {
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .comment .username {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .comment .comment-body {
-        font-size: 16px;
-        line-height: 1.5;
-    }
-
-    .replies {
-        margin-top: 20px;
-    }
-
-    .reply {
-        margin-bottom: 10px;
-    }
-
-    .reply .reply-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-
-    .reply .username {
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .reply .reply-body {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-</style>
+{% block titlecontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
+{% endblock %}
 
 {% block content %}
 <div class="post-details">
@@ -186,7 +20,7 @@
     <br />
     <form action={{ url_for("comment", postid=post.id) }} method="post">
         <textarea name="text" rows="8" cols="80" wrap="virtual"></textarea><br><br>
-        <input type="submit" value="add comment">
+        <input type="submit" id="comment-submit" value="add comment">
     </form>
 
     <div class="comments">
@@ -208,7 +42,7 @@
             <div class="comment-header">
                 <div id="comment-data" style="display: flex; flex-direction: row;">
                     <a href="" id="upvote-icon-cmnt">^</a>
-                    <div style="margin-left:10px;" id="author-cmnt">Username} </div>
+                    <div style="margin-left:10px;" id="author-cmnt">Username </div>
                     <div id="time-posted" style="margin-left:10px;">{{ Time}}</div>
                 </div>
             </div>

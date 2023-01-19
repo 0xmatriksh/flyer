@@ -1,55 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'main.html' %}
+{% block titlecontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        form {
-            width: 300px;
-            margin: auto;
-            border: 1px solid #ccc;
-            padding: 20px;
-        }
+{% block content %}
+<h2>REGISTER PAGE</h2>
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
 
-        input[name="username"],
-        input[name="password"] {
-            width: 100%;
-            height: 40px;
-            padding: 0 10px;
-            font-size: 18px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
+<form method="POST">
+    <label for="username">Email:</label><br>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br><br>
+    <input type="submit" value="Submit">
+</form>
 
-        input[type="submit"] {
-            width: 100%;
-            height: 40px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-    <form method="POST">
-        <label for="username">Email:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-</body>
-
-</html>
+{% endblock %}
