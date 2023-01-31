@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from datetime import datetime
 from flask_humanize import Humanize
+from functools import wraps
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -22,6 +23,23 @@ app.secret_key = "j54dsjdsd)021-jdsfjdkfddf?,/l.df"
 
 
 from models import User, Post, Upvote, Comment
+
+
+def login_required(func):
+    """decorator function to check if the user is logged in or not"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if "username" in session:
+            user = User.query.filter_by(username=session["username"]).first()
+            if not user:
+                return redirect(url_for("login"))
+            else:
+                return func(*args, **kwargs)
+        else:
+            return redirect(url_for("login"))
+
+    return wrapper
 
 
 @app.route("/")
@@ -65,9 +83,8 @@ def post(postid):
 
 
 @app.route("/comment/<postid>", methods=["GET", "POST"])
+@login_required
 def comment(postid):
-    if "username" not in session:
-        return redirect(url_for("login"))
     text = request.form["text"]
     author = User.query.filter_by(username=session["username"]).first()
     new_comment = Comment(
@@ -79,9 +96,8 @@ def comment(postid):
 
 
 @app.route("/like/<postid>")
+@login_required
 def like(postid):
-    if "username" not in session:
-        return redirect(url_for("login"))
     post = Post.query.filter_by(id=postid).first()
     author = User.query.filter_by(username=session["username"]).first()
     upvotes = Upvote.query.filter_by(post=post, author=author).all()
@@ -96,9 +112,8 @@ def like(postid):
 
 
 @app.route("/submit", methods=["GET", "POST"])
+@login_required
 def submit():
-    if "username" not in session:
-        return redirect(url_for("login"))
     if request.method == "POST":
         author = User.query.filter_by(username=session["username"]).first()
         title = request.form["title"]
@@ -144,9 +159,8 @@ def register():
 
 
 @app.route("/logout")
+@login_required
 def logout():
-    if "username" not in session:
-        return redirect(url_for("login"))
     """function to logout the user by
     removing the user from the session"""
     session.pop("username", None)
