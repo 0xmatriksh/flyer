@@ -15,7 +15,7 @@
     <div class="post">
         <div id="post-info">
             <a href={{ url_for("like", postid=post.id) }} {% if post.id in upvoted_posts %} disabled="disabled" {% endif
-                %} id="upvote-icon">^</a>
+                %} id="upvote-icon"></a>
             <a href={{ url_for("post", postid=post.id) }} id="title">{{post.title}}</a>
             <div id="src-url">(hello.com)</div>
         </div>

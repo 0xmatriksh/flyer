@@ -6,10 +6,10 @@
 
 {% block content %}
 <div class="post-details">
-    <div class="upvote-icon">
-        ^
+    <div class="post-head">
+        <a href={{ url_for("like", postid=post.id) }} id="upvote-icon"></a>
+        <h1 class="post-title">{{post.title}}</h1>
     </div>
-    <h1 class="post-title">{{post.title}}</h1>
     <div class="post-content">{{post.content}}</div>
     <div id="post-data">
         <div id="upvotes-count">{{post.upvotes|length}} points</div>

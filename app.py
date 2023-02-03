@@ -33,6 +33,7 @@ def login_required(func):
         if "username" in session:
             user = User.query.filter_by(username=session["username"]).first()
             if not user:
+                session.pop("username", None)
                 return redirect(url_for("login"))
             else:
                 return func(*args, **kwargs)
