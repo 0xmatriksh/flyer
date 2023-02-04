@@ -29,16 +29,35 @@
         <div class="comment">
             <div class="comment-header">
                 <div id="comment-data" style="display: flex; flex-direction: row;">
-                    <a href="" id="upvote-icon-cmnt">^</a>
+                    <a href="" id="upvote-icon-cmnt"></a>
                     <div style="margin-left:10px;" id="author-cmnt">{{comment.author.username}} </div>
                     <div id="time-posted" style="margin-left:10px;">{{ (now - comment.created_at)|humanize() }}</div>
                 </div>
             </div>
             <div class="comment-body">{{comment.text}}</div>
+            <div class="replies">
+                <div class="reply">
+                    <div class="reply-header">
+                        <span class="reply-author">Author2</span>
+                        <span class="reply-date">Date</span>
+                    </div>
+                    <div class="reply-body">
+                        <p>Reply Body</p>
+                    </div>
+                </div>
+                <div class="reply">
+                    <div class="reply-header">
+                        <span class="reply-author">Author3</span>
+                        <span class="reply-date">Date</span>
+                    </div>
+                    <div class="reply-body">
+                        <p>Reply Body</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <hr />
         {% endfor %}
-        <div class="comment">
+        <!-- <div class="comment">
             <div class="comment-header">
                 <div id="comment-data" style="display: flex; flex-direction: row;">
                     <a href="" id="upvote-icon-cmnt">^</a>
@@ -55,7 +74,7 @@
                     <div class="reply-body">Reply body goes here</div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 

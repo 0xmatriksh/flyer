@@ -37,9 +37,17 @@
 }
 
 .comment .comment-header {
-    display: flex;
-    align-items: center;
     margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#upvote-icon-cmnt {
+    width: 14px;
+    height: 14px;
+    padding-bottom: 5px;
+    color: #333;
+    background: url('../images/grayarrow.gif') no-repeat;
+    background-size: 14px 14px;
 }
 
 .comment {
@@ -48,17 +56,40 @@
     margin-right: 10px;
 }
 
-.comment .username {
-    font-size: 18px;
-    font-weight: bold;
-}
-
 .comment .comment-body {
     font-size: 16px;
     line-height: 1.5;
 }
 
 .replies {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+.reply {
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+.reply-header {
+    display: flex;
+    justify-content: start;
+    font-size: 14px;
+    margin-bottom: 10px;
+
+}
+
+
+.reply-date {
+    margin-left: 10px;
+    color: gray;
+}
+
+.reply-body {
+    font-size: 16px;
+}
+
+/* .replies {
     margin-top: 20px;
 }
 
@@ -81,7 +112,7 @@
 .reply .reply-body {
     font-size: 14px;
     line-height: 1.5;
-}
+} */
 
 #comment-submit {
     height: 28px;

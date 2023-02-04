@@ -101,13 +101,14 @@ body {
 }
 
 #upvote-icon {
-    width: 10px;
-    height: 10px;
+    width: 18px;
+    height: 18px;
     font-size: 18px;
     margin: 3px 6px 6px;
     /* trbl */
     color: #333;
-    background: url('../images/grayarrow.gif');
+    background: url('../images/grayarrow.gif') no-repeat;
+    background-size: 18px 18px;
 }
 
 #title {
