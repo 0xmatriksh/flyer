@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from datetime import datetime
 from flask_humanize import Humanize
 from functools import wraps
+from algo import predict
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -41,6 +42,21 @@ def login_required(func):
             return redirect(url_for("login"))
 
     return wrapper
+
+
+def category_map(idx):
+    if idx in [16, 17, 18]:
+        return "Politics"
+    elif idx in [2, 5, 1]:
+        return "Tech"
+    elif idx in [13, 14]:
+        return "Science"
+    elif idx in [15, 0, 19]:
+        return "Social"
+    elif idx in [10, 9]:
+        return "Sports"
+    else:
+        return "Auto"
 
 
 @app.route("/")
@@ -119,7 +135,10 @@ def submit():
         author = User.query.filter_by(username=session["username"]).first()
         title = request.form["title"]
         content = request.form["content"]
-        new_post = Post(title=title, content=content, author=author)
+        idx = predict(content)
+        new_post = Post(
+            title=title, content=content, author=author, category=category_map(idx)
+        )
         db.session.add(new_post)
         db.session.commit()
         print("Post Added")
