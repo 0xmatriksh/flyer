@@ -70,9 +70,7 @@ def index():
     posts = Post.query.all()
     now = datetime.now()
     upvoted_posts = []
-    print("tr")
     if "username" in session:
-        print("tr 2")
         author = User.query.filter_by(username=session["username"]).first()
         for post in posts:
             upvote = Upvote.query.filter_by(
@@ -119,6 +117,20 @@ def comment(postid):
     db.session.add(new_comment)
     db.session.commit()
     return redirect(url_for("post", postid=postid))
+
+
+@app.route("/reply/<parent_id>", methods=["GET", "POST"])
+def reply(parent_id):
+    if request.method == "POST":
+        # add this reply to comment from user to database
+        reply = request.form["cmnt"]
+
+        print(parent_id)
+        print(reply)
+        print("Comment from user")
+    else:
+        print("Nothing")
+    return redirect(url_for("index"))
 
 
 @app.route("/like/<postid>")

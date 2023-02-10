@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="comment-body">{{comment.text}}</div>
-            <button id="reply">reply</button>
+            <button data-post={{comment.id}} id="replybtn">reply</button>
             <div class="replies">
                 <div class="reply">
                     <div class="reply-header">
@@ -79,5 +79,7 @@
         </div> -->
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/post.js') }}"></script>
 
 {% endblock %}
