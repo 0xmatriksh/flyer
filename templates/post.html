@@ -7,7 +7,8 @@
 {% block content %}
 <div class="post-details">
     <div class="post-head">
-        <a href={{ url_for("like", postid=post.id) }} id="upvote-icon"></a>
+        <a href={{ url_for("like", postid=post.id) }} {% if upvoted %} disabled="disabled" {% endif %}
+            id="upvote-icon"></a>
         <h1 class="post-title">{{post.title}}</h1>
     </div>
     <div class="post-content">{{post.content}}</div>
@@ -35,6 +36,7 @@
                 </div>
             </div>
             <div class="comment-body">{{comment.text}}</div>
+            <button id="reply">reply</button>
             <div class="replies">
                 <div class="reply">
                     <div class="reply-header">

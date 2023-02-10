@@ -47,16 +47,18 @@ def login_required(func):
 def category_map(idx):
     if idx in [16, 17, 18]:
         return "Politics"
-    elif idx in [2, 5, 1]:
+    elif idx in [1, 2, 3, 4, 5, 12]:
         return "Tech"
-    elif idx in [13, 14]:
+    elif idx in [11, 13, 14]:
         return "Science"
     elif idx in [15, 0, 19]:
         return "Social"
     elif idx in [10, 9]:
         return "Sports"
-    else:
+    elif idx in [7, 8]:
         return "Auto"
+    else:
+        return "Misc"
 
 
 @app.route("/")
@@ -94,9 +96,16 @@ def topic(cat):
 def post(postid):
     """This view function is for Post detail"""
     now = datetime.now()
+    upvoted = False
+    author = User.query.filter_by(username=session["username"]).first()
     post = Post.query.filter_by(id=postid).first()
+    upvote = Upvote.query.filter_by(post_id=post.id, author_id=author.id).first()
+    if upvote:
+        upvoted = True
     comments = Comment.query.filter_by(post_id=post.id).all()
-    return render_template("post.html", now=now, post=post, comments=comments)
+    return render_template(
+        "post.html", now=now, post=post, comments=comments, upvoted=upvoted
+    )
 
 
 @app.route("/comment/<postid>", methods=["GET", "POST"])

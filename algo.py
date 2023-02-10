@@ -107,5 +107,8 @@ def predict(text):
 
     return predict_test[0]
 
+    # print(predict_test[0])
+    # print(nb.predict_proba(X_test_v))
 
-predict("King is yet to speak about yesterday event in the country")
+
+# predict("Stocks fall on Wall Street, giving back some recent gains")
