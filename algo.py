@@ -6,6 +6,7 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from mnb import MultiNB
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
@@ -13,7 +14,7 @@ allwords = set(nltk.corpus.words.words())
 
 total_documents = 11314
 
-with open("model/count_dict5.json", "r") as f:
+with open("model/count_dict.json", "r") as f:
     word_count = json.load(f)
 # print(len(word_count))
 
@@ -99,8 +100,9 @@ def predict(text):
     for sent in test_n:
         vec = tf_idf_(sent.split(" "))
         X_test_v.append(vec)
+    X_test_v = np.array(X_test_v)
 
-    with open("model/flyer_pkl", "rb") as f:
+    with open("model/flyer_pkl2", "rb") as f:
         nb = pickle.load(f)
 
     predict_test = nb.predict(X_test_v)
@@ -108,7 +110,8 @@ def predict(text):
     return predict_test[0]
 
     # print(predict_test[0])
+    # print(nb.predict_proba)
     # print(nb.predict_proba(X_test_v))
 
 
-# predict("Stocks fall on Wall Street, giving back some recent gains")
+predict("Stocks fall on Wall Street, giving back some recent gains")
