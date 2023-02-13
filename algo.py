@@ -114,4 +114,4 @@ def predict(text):
     # print(nb.predict_proba(X_test_v))
 
 
-predict("Stocks fall on Wall Street, giving back some recent gains")
+# predict("Stocks fall on Wall Street, giving back some recent gains")

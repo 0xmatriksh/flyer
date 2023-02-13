@@ -26,15 +26,24 @@
     margin-top: 25px;
 }
 
+.comment {
+    margin-bottom: 20px;
+    height: auto;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comment .comment-body {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 .comments h2 {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 16px;
 }
 
-.comment {
-    margin-bottom: 20px;
-}
 
 .comment .comment-header {
     margin-bottom: 10px;
@@ -50,20 +59,14 @@
     background-size: 14px 14px;
 }
 
-.comment {
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.comment .comment-body {
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-.replies {
+.replies-1 {
     margin-top: 20px;
     padding-left: 20px;
+}
+
+
+.replies-2 {
+    padding-left: 40px;
 }
 
 .reply {

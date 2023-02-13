@@ -36,26 +36,36 @@
                 </div>
             </div>
             <div class="comment-body">{{comment.text}}</div>
-            <button data-post={{comment.id}} id="replybtn">reply</button>
-            <div class="replies">
+            <button data-cmnt={{comment.id}} data-post={{post.id}} id="replybtn">reply</button>
+            <div class="replies-1">
+                {% for rep1 in comment.replies %}
                 <div class="reply">
                     <div class="reply-header">
-                        <span class="reply-author">Author2</span>
-                        <span class="reply-date">Date</span>
+                        <span class="reply-author">{{rep1.author.username}}</span>
+                        <span class="reply-date">{{ (now - rep1.created_at)|humanize() }}</span>
                     </div>
                     <div class="reply-body">
-                        <p>Reply Body</p>
+                        <p>{{rep1.text}}</p>
+                    </div>
+                    <button data-cmnt={{rep1.id}} data-post={{post.id}} id="replybtn1">reply</button>
+                    <div class="replies-2">
+                        {% for rep2 in rep1.replies %}
+                        <div class="reply">
+                            <div class="reply-header">
+                                <span class="reply-author">{{rep2.author.username}}</span>
+                                <span class="reply-date">{{ (now - rep2.created_at)|humanize() }}</span>
+                            </div>
+                            <div class="reply-body">
+                                <p>{{rep2.text}}</p>
+                            </div>
+                            <button data-cmnt={{comment.id}} data-post={{post.id}} id="replybtn2">reply</button>
+
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
-                <div class="reply">
-                    <div class="reply-header">
-                        <span class="reply-author">Author3</span>
-                        <span class="reply-date">Date</span>
-                    </div>
-                    <div class="reply-body">
-                        <p>Reply Body</p>
-                    </div>
-                </div>
+
+                {% endfor %}
             </div>
         </div>
         {% endfor %}

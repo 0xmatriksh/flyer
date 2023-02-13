@@ -91,6 +91,7 @@ def topic(cat):
 
 
 @app.route("/post/<postid>")
+@login_required
 def post(postid):
     """This view function is for Post detail"""
     now = datetime.now()
@@ -100,9 +101,16 @@ def post(postid):
     upvote = Upvote.query.filter_by(post_id=post.id, author_id=author.id).first()
     if upvote:
         upvoted = True
-    comments = Comment.query.filter_by(post_id=post.id).all()
+    comments = Comment.query.filter_by(post_id=post.id, parent_id=None).all()
+    # not equals to check to get replies only
+    # replies = Comment.query.filter_by(post_id=post.id).all()
     return render_template(
-        "post.html", now=now, post=post, comments=comments, upvoted=upvoted
+        "post.html",
+        now=now,
+        post=post,
+        comments=comments,
+        upvoted=upvoted,
+        # replies=replies,
     )
 
 
@@ -119,18 +127,26 @@ def comment(postid):
     return redirect(url_for("post", postid=postid))
 
 
-@app.route("/reply/<parent_id>", methods=["GET", "POST"])
-def reply(parent_id):
+@app.route("/reply/<post_id>/<parent_id>", methods=["GET", "POST"])
+def reply(post_id, parent_id):
     if request.method == "POST":
         # add this reply to comment from user to database
         reply = request.form["cmnt"]
+        author = User.query.filter_by(username=session["username"]).first()
 
-        print(parent_id)
-        print(reply)
         print("Comment from user")
+        print("Parent id: ", parent_id)
+        print("Reply text: ", reply)
+        new_reply = Comment(
+            text=reply, author_id=author.id, post_id=post_id, parent_id=parent_id
+        )
+
+        db.session.add(new_reply)
+        db.session.commit()
+
     else:
         print("Nothing")
-    return redirect(url_for("index"))
+    return redirect(url_for("post", postid=post_id))
 
 
 @app.route("/like/<postid>")
