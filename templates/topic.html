@@ -1,7 +1,6 @@
 {% extends 'main.html' %}
 
 {% block content %}
-
 <div class="navbar-section">
     <div id="menu-section">
         <ul class="navbar-menu">
@@ -12,32 +11,22 @@
 </div>
 
 <div class="feed">
+    {% for post in posts %}
     <div class="post">
         <div id="post-info">
-            <div id="upvote-icon">^</div>
-            <a href="" id="title">This is title of the first post</a>
+            <a href={{ url_for("like", postid=post.id) }} {% if post.id in upvoted_posts %} disabled="disabled" {% endif
+                %} id="upvote-icon"></a>
+            <a href={{ url_for("post", postid=post.id) }} id="title">{{post.title}}</a>
             <div id="src-url">(hello.com)</div>
         </div>
         <div id="post-data">
-            <div id="upvotes-count">549 points</div>
-            <div id="author">by adansmith</div>
-            <div id="time-posted">10 hours ago</div>
-            <div id="comments-count">57 comments</div>
+            <div id="upvotes-count">{{post.upvotes|length}} points</div>
+            <div id="author">by {{post.author.username}}</div>
+            <div id="time-posted">{{ (now - post.created_at)|humanize() }}</div>
+            <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
         </div>
     </div>
-    <div class="post">
-        <div id="post-info">
-            <div id="upvote-icon">^</div>
-            <a href="" id="title">This is title of the second post</a>
-            <div id="src-url">(hello.com)</div>
-        </div>
-        <div id="post-data">
-            <div id="upvotes-count">129 points</div>
-            <div id="author">by elomrust</div>
-            <div id="time-posted">5 hours ago</div>
-            <div id="comments-count">31 comments</div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

@@ -23,6 +23,9 @@
             <div id="upvotes-count">{{post.upvotes|length}} points</div>
             <div id="author">by {{post.author.username}}</div>
             <div id="time-posted">{{ (now - post.created_at)|humanize() }}</div>
+            {% if post.id in upvoted_posts %}
+            <a href="" id="unvote">unvote</a>
+            {% endif %}
             <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
         </div>
     </div>

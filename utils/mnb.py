@@ -52,24 +52,6 @@ class MultiNB:
             self.N_y[i] = np.sum(columnwise_sum)  # 1d
 
     def _theta(self, x_i, i, h):
-        """
-        Calculates theta_yi. aka P(xi | y) using eqn(1) in the notebook.
-
-        params
-        ------
-        x_i: int.
-            feature x_i
-
-        i: int.
-            feature index.
-
-        h: int or string.
-            a class in y
-
-        returns
-        -------
-        theta_yi: P(xi | y)
-        """
 
         Nyi = self.N_yi[h, i]
         Ny = self.N_y[h]
@@ -80,16 +62,6 @@ class MultiNB:
         return (numerator / denominator) ** x_i
 
     def _likelyhood(self, x, h):
-        """
-        Calculates P(E|H) = P(E1|H) * P(E2|H) .. * P(En|H).
-
-        params
-        ------
-        x: array. shape(n_features,)
-            a row of data.
-        h: int.
-            a class in y
-        """
         tmp = []
         for i in range(x.shape[0]):
             tmp.append(self._theta(x[i], i, h))

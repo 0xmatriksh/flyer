@@ -1,6 +1,7 @@
 """
 Flask creates the instance of WSGI application
 """
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,20 +9,20 @@ from flask_migrate import Migrate
 from datetime import datetime
 from flask_humanize import Humanize
 from functools import wraps
-from algo import predict
+from algo import predict_cat
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, render_as_batch=True)
 humanize = Humanize(app)
-
+load_dotenv()
 
 HUMANIZE_USE_UTC = True
 
 
-app.secret_key = "j54dsjdsd)021-jdsfjdkfddf?,/l.df"
-
+app.secret_key = os.environ.get("SECRET_KEY")
 
 from models import User, Post, Upvote, Comment
 
@@ -55,8 +56,6 @@ def category_map(idx):
         return "Social"
     elif idx in [10, 9]:
         return "Sports"
-    elif idx in [7, 8]:
-        return "Auto"
     else:
         return "Misc"
 
@@ -86,8 +85,21 @@ def index():
 
 @app.route("/<cat>")
 def topic(cat):
+    posts = Post.query.filter_by(category=cat.title()).all()
+    now = datetime.now()
+    upvoted_posts = []
+    if "username" in session:
+        author = User.query.filter_by(username=session["username"]).first()
+        for post in posts:
+            upvote = Upvote.query.filter_by(
+                post_id=post.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_posts.append(post.id)
     """This view function is for Category posts page"""
-    return render_template("topic.html", cat=cat)
+    return render_template(
+        "topic.html", posts=posts, now=now, upvoted_posts=upvoted_posts
+    )
 
 
 @app.route("/post/<postid>")
@@ -171,8 +183,11 @@ def submit():
     if request.method == "POST":
         author = User.query.filter_by(username=session["username"]).first()
         title = request.form["title"]
+
         content = request.form["content"]
-        idx = predict(content)
+        idx = predict_cat(content)
+        # print(category_map(idx))
+
         new_post = Post(
             title=title, content=content, author=author, category=category_map(idx)
         )
@@ -223,6 +238,9 @@ def logout():
     session.pop("username", None)
     return redirect(url_for("index"))
 
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # html escaping
 # @app.route("/<name>")

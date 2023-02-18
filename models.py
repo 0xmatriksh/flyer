@@ -1,6 +1,14 @@
 """Models.py"""
 from datetime import datetime
+
+
+# def get_db():
 from app import db
+
+# return db
+
+
+# db = get_db()
 
 
 class User(db.Model):

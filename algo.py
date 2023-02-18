@@ -1,12 +1,14 @@
+from utils.mnb import MultiNB
 import json
 import string
 import pickle
 import numpy as np
 import nltk
+import sklearn
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from mnb import MultiNB
+
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
@@ -84,7 +86,7 @@ def tf_idf_(sentence):
     return tf_idf_vec
 
 
-def predict(text):
+def predict_cat(text):
     """function to predict the category of the given post"""
     new_test = [text]
 
@@ -114,4 +116,4 @@ def predict(text):
     # print(nb.predict_proba(X_test_v))
 
 
-# predict("Stocks fall on Wall Street, giving back some recent gains")
+# predict_cat("Stocks fall on Wall Street, giving back some recent gains")

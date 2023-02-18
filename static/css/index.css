@@ -151,6 +151,16 @@ body {
     margin-right: 5px;
 }
 
+#unvote {
+    color: #332;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+#unvote:hover {
+    text-decoration: underline;
+}
+
 /* Add hover effect to title */
 #title:hover {
     color: #0079d3;
