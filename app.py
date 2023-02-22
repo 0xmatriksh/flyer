@@ -24,7 +24,7 @@ HUMANIZE_USE_UTC = True
 
 app.secret_key = os.environ.get("SECRET_KEY")
 
-from models import User, Post, Upvote, Comment
+from models import User, Post, Upvote, Comment, CommentUpvote
 
 
 def login_required(func):
@@ -129,7 +129,7 @@ def post(postid):
 @app.route("/comment/<postid>", methods=["GET", "POST"])
 @login_required
 def comment(postid):
-    text = request.form["text"]
+    text = request.form.get("text")
     author = User.query.filter_by(username=session["username"]).first()
     new_comment = Comment(
         text=text, author_id=author.id, post_id=postid, parent_id=None
@@ -139,6 +139,7 @@ def comment(postid):
     return redirect(url_for("post", postid=postid))
 
 
+# this is api only can return json
 @app.route("/reply/<post_id>/<parent_id>", methods=["GET", "POST"])
 def reply(post_id, parent_id):
     if request.method == "POST":
@@ -177,6 +178,23 @@ def like(postid):
     return redirect(url_for("index"))
 
 
+@app.route("/cmntupvote/<cmntid>")
+@login_required
+def cmntupvote(cmntid):
+    comment = Comment.query.filter_by(id=cmntid).first()
+    author = User.query.filter_by(username=session["username"]).first()
+    upvotes = CommentUpvote.query.filter_by(comment=comment, author=author).all()
+    if len(upvotes) == 0:
+        new_like = Upvote(author=author, post=post)
+        db.session.add(new_like)
+        db.session.commit()
+    else:
+        print(upvotes)
+        print("There is already likes by this user")
+    return redirect(url_for("index"))
+
+
+# this is api only can return json
 @app.route("/submit", methods=["GET", "POST"])
 @login_required
 def submit():
@@ -185,7 +203,7 @@ def submit():
         title = request.form["title"]
 
         content = request.form["content"]
-        idx = predict_cat(content)
+        idx = predict_cat(title)
         # print(category_map(idx))
 
         new_post = Post(

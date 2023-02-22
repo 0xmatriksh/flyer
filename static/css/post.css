@@ -27,7 +27,7 @@
 }
 
 .comment {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     height: auto;
     border-radius: 50%;
     margin-right: 10px;
@@ -41,13 +41,17 @@
 .comments h2 {
     font-size: 22px;
     font-weight: bold;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 
 .comment .comment-header {
     margin-bottom: 10px;
     font-size: 14px;
+}
+
+.comment .comment-header #time-posted {
+    color: grey
 }
 
 #upvote-icon-cmnt {
@@ -59,63 +63,10 @@
     background-size: 14px 14px;
 }
 
-.replies-1 {
-    margin-top: 20px;
-    padding-left: 20px;
+.replies {
+    margin-top: 10px;
+    margin-left: 40px;
 }
-
-
-.replies-2 {
-    padding-left: 40px;
-}
-
-.reply {
-    margin-top: 20px;
-    padding-bottom: 10px;
-}
-
-.reply-header {
-    display: flex;
-    justify-content: start;
-    font-size: 14px;
-    margin-bottom: 10px;
-
-}
-
-
-.reply-date {
-    margin-left: 10px;
-    color: gray;
-}
-
-.reply-body {
-    font-size: 16px;
-}
-
-/* .replies {
-    margin-top: 20px;
-}
-
-.reply {
-    margin-bottom: 10px;
-}
-
-.reply .reply-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-
-.reply .username {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.reply .reply-body {
-    font-size: 14px;
-    line-height: 1.5;
-} */
 
 #comment-submit {
     height: 28px;
@@ -123,4 +74,12 @@
     font-size: 16px;
     border: 1px solid #434;
     box-sizing: border-box;
+}
+
+#replybtn {
+    font-size: 12px;
+}
+
+#replybtn:hover {
+    text-decoration: underline;
 }

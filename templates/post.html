@@ -4,6 +4,35 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
 {% endblock %}
 
+<!-- recursion to show comment and their replies -->
+{% macro render_comments(comments) %}
+{% for comment in comments %}
+<div class="comment">
+    <div class="comment-header">
+        <div id="comment-data" style="display: flex; flex-direction: row;">
+            <a href={{ url_for("cmntupvote", cmntid=comment.id) }} id="upvote-icon-cmnt"></a>
+            <div style="margin-left:10px;" id="author-cmnt">{{comment.author.username}} </div>
+            <div id="time-posted" style="margin-left:10px;">{{ (now - comment.created_at)|humanize() }}</div>
+        </div>
+    </div>
+    <div class="comment-body">{{comment.text}}</div>
+    <button data-cmnt={{comment.id}} data-post={{post.id}} class="replybtn" onclick="showReplyFrom(this)">reply</button>
+    <form onsubmit="submitReplyForm(this)" style="display:none" method="post" class="replyForm"
+        action="javascript:void(0);">
+        <p id="postId" hidden>{{post.id}}</p>
+        <p id="commentId" hidden>{{comment.id}}</p>
+        <textarea name="cmnt" id="replyText" rows="6" cols="60"></textarea>
+        <button id="reply" type="submit">submit</button>
+    </form>
+    {% if comment.replies %}
+    <div class="replies">
+        {{ render_comments(comment.replies) }}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endmacro %}
+
 {% block content %}
 <div class="post-details">
     <div class="post-head">
@@ -19,56 +48,17 @@
         <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
     </div>
     <br />
-    <form action={{ url_for("comment", postid=post.id) }} method="post">
-        <textarea name="text" rows="8" cols="80" wrap="virtual"></textarea><br><br>
+    <form action={{ url_for("comment", postid=post.id) }} id="commentForm" method="post">
+        <p id="postId" hidden>{{post.id}}</p>
+        <textarea id="commentText" name="text" rows="8" cols="80" wrap="virtual"></textarea><br><br>
         <input type="submit" id="comment-submit" value="add comment">
     </form>
 
     <div class="comments">
         <h2>Comments</h2>
-        {% for comment in comments %}
-        <div class="comment">
-            <div class="comment-header">
-                <div id="comment-data" style="display: flex; flex-direction: row;">
-                    <a href="" id="upvote-icon-cmnt"></a>
-                    <div style="margin-left:10px;" id="author-cmnt">{{comment.author.username}} </div>
-                    <div id="time-posted" style="margin-left:10px;">{{ (now - comment.created_at)|humanize() }}</div>
-                </div>
-            </div>
-            <div class="comment-body">{{comment.text}}</div>
-            <button data-cmnt={{comment.id}} data-post={{post.id}} id="replybtn">reply</button>
-            <div class="replies-1">
-                {% for rep1 in comment.replies %}
-                <div class="reply">
-                    <div class="reply-header">
-                        <span class="reply-author">{{rep1.author.username}}</span>
-                        <span class="reply-date">{{ (now - rep1.created_at)|humanize() }}</span>
-                    </div>
-                    <div class="reply-body">
-                        <p>{{rep1.text}}</p>
-                    </div>
-                    <button data-cmnt={{rep1.id}} data-post={{post.id}} id="replybtn1">reply</button>
-                    <div class="replies-2">
-                        {% for rep2 in rep1.replies %}
-                        <div class="reply">
-                            <div class="reply-header">
-                                <span class="reply-author">{{rep2.author.username}}</span>
-                                <span class="reply-date">{{ (now - rep2.created_at)|humanize() }}</span>
-                            </div>
-                            <div class="reply-body">
-                                <p>{{rep2.text}}</p>
-                            </div>
-                            <button data-cmnt={{comment.id}} data-post={{post.id}} id="replybtn2">reply</button>
+        {{ render_comments(comments) }}
 
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
 
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
         <!-- <div class="comment">
             <div class="comment-header">
                 <div id="comment-data" style="display: flex; flex-direction: row;">

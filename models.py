@@ -2,13 +2,7 @@
 from datetime import datetime
 
 
-# def get_db():
 from app import db
-
-# return db
-
-
-# db = get_db()
 
 
 class User(db.Model):
@@ -20,6 +14,7 @@ class User(db.Model):
     posts = db.relationship("Post", backref="author", lazy=True)
     upvotes = db.relationship("Upvote", backref="author", lazy=True)
     comments = db.relationship("Comment", backref="author", lazy=True)
+    cmnt_upvotes = db.relationship("CommentUpvote", backref="author", lazy=True)
 
 
 class Post(db.Model):
