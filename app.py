@@ -11,6 +11,7 @@ from flask_humanize import Humanize
 from functools import wraps
 from algo import predict_cat
 from dotenv import load_dotenv
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -69,8 +70,17 @@ def index():
     posts = Post.query.all()
     now = datetime.now()
     upvoted_posts = []
+    karma = 0
     if "username" in session:
         author = User.query.filter_by(username=session["username"]).first()
+
+        # karma of the posts by this user
+        karma = (
+            db.session.query(func.count(Upvote.id))  # counts all the upvotes
+            .join(Post)  # joins upvotes with Post
+            .filter(Post.author_id == author.id)  # get posts by this user
+            .scalar()  # if no found, scalar() returns None
+        ) or 0
         for post in posts:
             upvote = Upvote.query.filter_by(
                 post_id=post.id, author_id=author.id
@@ -79,7 +89,7 @@ def index():
                 upvoted_posts.append(post.id)
 
     return render_template(
-        "index.html", posts=posts, now=now, upvoted_posts=upvoted_posts
+        "index.html", karma=karma, posts=posts, now=now, upvoted_posts=upvoted_posts
     )
 
 

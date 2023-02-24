@@ -20,14 +20,6 @@
         padding-inline-start: 0px !important;
     }
 
-    #post-info {
-        flex-wrap: wrap;
-    }
-
-    #post-data {
-        flex-wrap: wrap;
-    }
-
 }
 
 body {
@@ -56,7 +48,7 @@ body {
     border: 1px white solid;
     margin-right: 10px;
     color: white;
-    height: 30px;
+    height: 25px;
 }
 
 .site-name {
@@ -124,6 +116,7 @@ body {
 
 #post-info {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     margin-bottom: 8px;
 }
@@ -155,7 +148,7 @@ body {
 
 #post-data {
     display: flex;
-    justify-content: start;
+    flex-wrap: wrap;
     font-size: 14px;
     color: #333;
 }
