@@ -3,7 +3,7 @@
 // need to implement technique to auto create the ui in depth layer for reply of replys without manuall html elements
 // cause depth can do to too deep, so need to handle that
 
-// var replyForm = '';
+var replyForm = '';
 function showReplyFrom(element) {
     const allforms = document.querySelectorAll('.replyForm');
     allforms.forEach(function (form) {
@@ -11,6 +11,13 @@ function showReplyFrom(element) {
     })
 
     element.nextElementSibling.style.display = "block"
+
+    const allform = document.querySelectorAll('.replyForm');
+    allform.forEach(function (form) {
+        if (form.style.display == "block") {
+            replyForm = form;
+        }
+    })
 }
 
 // CODE TO NOT COMMENT IF the commment box is EMPTY
@@ -26,7 +33,6 @@ function showReplyFrom(element) {
 //             replyForm = form;
 //         }
 //     })
-//     console.log('asadada')
 // }
 
 
@@ -43,7 +49,6 @@ function submitReplyForm(element) {
 
     if (replyText == "") {
         alert("Cannot comment Empty");
-        console.log(postId);
     }
     else {
         console.log(formData);

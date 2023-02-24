@@ -35,8 +35,7 @@
         <div id="auth-section">
             <ul class="navbar-menu">
                 {% if session.username %}
-                <li class="menu"><a class="menu-anchor" href={{ url_for('topic',cat="sports" )
-                        }}>{{session.username}}</a></li> |
+                <li class="menu"><a class="menu-anchor" href="#">{{session.username}}</a></li> |
                 <li class="menu"><a class="menu-anchor" href={{ url_for('logout' ) }}>logout</a></li>
                 {% else %}
                 <li class="menu"><a class="menu-anchor" href={{ url_for('register' ) }}>register</a></li>|

@@ -83,3 +83,13 @@
 #replybtn:hover {
     text-decoration: underline;
 }
+
+/* Media Query CSS */
+
+@media only screen and (max-width: 600px) {
+
+    #commentText,
+    #replyText {
+        width: 100% !important;
+    }
+}

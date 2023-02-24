@@ -3,6 +3,33 @@
 
 }
 
+@media only screen and (max-width: 600px) {
+    .navbar-section {
+        height: inherit !important;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .navbar-menu {
+        font-size: 1rem !important;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #category-section ul {
+        padding-inline-start: 0px !important;
+    }
+
+    #post-info {
+        flex-wrap: wrap;
+    }
+
+    #post-data {
+        flex-wrap: wrap;
+    }
+
+}
+
 body {
     background-color: rgb(209, 212, 232);
 }
@@ -29,6 +56,7 @@ body {
     border: 1px white solid;
     margin-right: 10px;
     color: white;
+    height: 30px;
 }
 
 .site-name {
