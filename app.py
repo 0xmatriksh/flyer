@@ -85,7 +85,8 @@ def index():
 
 @app.route("/<cat>")
 def topic(cat):
-    posts = Post.query.filter_by(category=cat.title()).all()
+    category = cat.title()
+    posts = Post.query.filter_by(category=category).all()
     now = datetime.now()
     upvoted_posts = []
     if "username" in session:
@@ -98,7 +99,11 @@ def topic(cat):
                 upvoted_posts.append(post.id)
     """This view function is for Category posts page"""
     return render_template(
-        "topic.html", posts=posts, now=now, upvoted_posts=upvoted_posts
+        "topic.html",
+        category=category,
+        posts=posts,
+        now=now,
+        upvoted_posts=upvoted_posts,
     )
 
 

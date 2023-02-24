@@ -1,5 +1,9 @@
 {% extends 'main.html' %}
 
+{% block titlecontent %}
+<title>{{category}} | Flyer</title>
+{% endblock %}
+
 {% block content %}
 <div class="navbar-section">
     <div id="menu-section">
@@ -11,6 +15,11 @@
 </div>
 
 <div class="feed">
+    {% if posts|length == 0 %}
+    <center>
+        <h1>No Posts :(</h1>
+    </center>
+    {% endif %}
     {% for post in posts %}
     <div class="post">
         <div id="post-info">
