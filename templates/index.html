@@ -24,7 +24,10 @@
             <div id="author">by {{post.author.username}}</div>
             <div id="time-posted">{{ (now - post.created_at)|humanize() }}</div>
             {% if post.id in upvoted_posts %}
-            <a href="" id="unvote">unvote</a>
+            <a href={{ url_for("unlike", postid=post.id) }} id="unvote">unvote</a>
+            {% endif %}
+            {% if post.author.username == session.username %}
+            <a href={{ url_for("edit", postid=post.id) }} id="unvote">edit</a>
             {% endif %}
             <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
         </div>

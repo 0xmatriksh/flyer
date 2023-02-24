@@ -10,7 +10,8 @@
 <div class="comment">
     <div class="comment-header">
         <div id="comment-data" style="display: flex; flex-direction: row;">
-            <a href={{ url_for("cmntupvote", cmntid=comment.id) }} id="upvote-icon-cmnt"></a>
+            <a href={{ url_for("cmntupvote", cmntid=comment.id) }} {% if comment.id in upvoted_comments %}
+                disabled="disabled" {% endif %} id="upvote-icon-cmnt"></a>
             <div style="margin-left:10px;" id="author-cmnt">{{comment.author.username}} </div>
             <div id="time-posted" style="margin-left:10px;">{{ (now - comment.created_at)|humanize() }}</div>
         </div>

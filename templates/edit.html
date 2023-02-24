@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block titlecontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+<form class="post-form" method="post">
+    <h2>Editing Post Id: {{post.id}}</h2>
+    <label>Title : </label>
+    <input type="text" name="title" value="{{post.title}}"><br><br>
+
+    <label>Content :</label>
+    <textarea rows="7" cols="25" name="content">{{post.content}}</textarea><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

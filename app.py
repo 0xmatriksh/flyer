@@ -114,15 +114,24 @@ def post(postid):
     if upvote:
         upvoted = True
     comments = Comment.query.filter_by(post_id=post.id, parent_id=None).all()
-    # not equals to check to get replies only
-    # replies = Comment.query.filter_by(post_id=post.id).all()
+    allcomments = Comment.query.filter_by(post_id=post.id)
+    upvoted_comments = []
+    if "username" in session:
+        author = User.query.filter_by(username=session["username"]).first()
+        for comment in allcomments:
+            upvote = CommentUpvote.query.filter_by(
+                comment_id=comment.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_comments.append(comment.id)
+
     return render_template(
         "post.html",
         now=now,
         post=post,
         comments=comments,
         upvoted=upvoted,
-        # replies=replies,
+        upvoted_comments=upvoted_comments,
     )
 
 
@@ -178,6 +187,21 @@ def like(postid):
     return redirect(url_for("index"))
 
 
+@app.route("/unlike/<postid>")
+@login_required
+def unlike(postid):
+    post = Post.query.filter_by(id=postid).first()
+    author = User.query.filter_by(username=session["username"]).first()
+    upvote = Upvote.query.filter_by(post=post, author=author).all()
+    if len(upvote) != 0:
+        db.session.delete(upvote[0])
+        db.session.commit()
+    else:
+        print(upvote)
+        print("There is no upvote by this user, then how can delete, HUH?")
+    return redirect(url_for("index"))
+
+
 @app.route("/cmntupvote/<cmntid>")
 @login_required
 def cmntupvote(cmntid):
@@ -185,11 +209,10 @@ def cmntupvote(cmntid):
     author = User.query.filter_by(username=session["username"]).first()
     upvotes = CommentUpvote.query.filter_by(comment=comment, author=author).all()
     if len(upvotes) == 0:
-        new_like = Upvote(author=author, post=post)
+        new_like = CommentUpvote(author=author, comment=comment)
         db.session.add(new_like)
         db.session.commit()
     else:
-        print(upvotes)
         print("There is already likes by this user")
     return redirect(url_for("index"))
 
@@ -215,6 +238,35 @@ def submit():
         return redirect(url_for("index"))
     """This view function is for the submit page"""
     return render_template("submit.html")
+
+
+@app.route("/edit/<int:postid>", methods=["GET", "POST"])
+@login_required
+def edit(postid):
+    post = Post.query.filter_by(id=postid).first()
+    if request.method == "POST":
+        author = User.query.filter_by(username=session["username"]).first()
+        if post and post.author == author:
+            db.session.delete(post)
+            db.session.commit()
+
+            author = User.query.filter_by(username=session["username"]).first()
+            title = request.form["title"]
+            content = request.form["content"]
+            idx = predict_cat(title)
+            new_post = Post(
+                id=postid,
+                title=title,
+                content=content,
+                author=author,
+                category=category_map(idx),
+            )
+            db.session.add(new_post)
+            db.session.commit()
+            print("Post Added")
+            return redirect(url_for("index"))
+    """This view function is for the submit page"""
+    return render_template("edit.html", post=post)
 
 
 @app.route("/login", methods=["GET", "POST"])
