@@ -20,6 +20,14 @@
         padding-inline-start: 0px !important;
     }
 
+    .post {
+        width: 100% !important;
+    }
+
+    #title {
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
 }
 
 body {
@@ -109,8 +117,8 @@ body {
 .post {
     border: 1px solid #333;
     border-radius: 4px;
-    margin-bottom: 16px;
-    padding: 16px;
+    margin-bottom: 8px;
+    padding: 8px;
     width: 80%;
 }
 
@@ -118,7 +126,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 8px;
+}
+
+#post-info p {
+    margin: 0;
 }
 
 #upvote-icon {
@@ -196,4 +207,22 @@ body {
 /* To disable the href */
 a[disabled="disabled"] {
     pointer-events: none;
+}
+
+
+/* Pagination CSS */
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
 }

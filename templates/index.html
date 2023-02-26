@@ -17,6 +17,7 @@
     {% for post in posts %}
     <div class="post">
         <div id="post-info">
+            <p>{{loop.index}}.</p>
             <a href={{ url_for("like", postid=post.id) }} {% if post.id in upvoted_posts %} disabled="disabled" {% endif
                 %} id="upvote-icon"></a>
             <a href={{ url_for("post", postid=post.id) }} id="title">{{post.title}}</a>
@@ -36,6 +37,13 @@
         </div>
     </div>
     {% endfor %}
+</div>
+
+<!-- Pagination Links-->
+<div class="pagination">
+    <a href="{{ url_for('index', page=page.next_num) }}" class="" {% if page.page==page.pages %} disabled{% endif %}>
+        More
+    </a>
 </div>
 
 {% endblock %}

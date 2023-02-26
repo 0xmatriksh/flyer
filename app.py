@@ -67,7 +67,9 @@ def index():
     # users = User.query.all()
     # for user in users:
     #     print(user.username)
-    posts = Post.query.all()
+    pagenum = request.args.get("page", 1, type=int)
+    page = Post.query.paginate(page=pagenum, per_page=10)
+    posts = page.items
     now = datetime.now()
     upvoted_posts = []
     karma = 0
@@ -89,14 +91,22 @@ def index():
                 upvoted_posts.append(post.id)
 
     return render_template(
-        "index.html", karma=karma, posts=posts, now=now, upvoted_posts=upvoted_posts
+        "index.html",
+        karma=karma,
+        posts=posts,
+        page=page,
+        now=now,
+        upvoted_posts=upvoted_posts,
     )
 
 
 @app.route("/<cat>")
 def topic(cat):
     category = cat.title()
-    posts = Post.query.filter_by(category=category).all()
+    # posts = Post.query.filter_by(category=category).all()
+    page = Post.query.filter_by(category=category).paginate(page=1, per_page=10)
+    posts = page.items
+    print(posts)
     now = datetime.now()
     upvoted_posts = []
     if "username" in session:
@@ -112,6 +122,7 @@ def topic(cat):
         "topic.html",
         category=category,
         posts=posts,
+        page=page,
         now=now,
         upvoted_posts=upvoted_posts,
     )
