@@ -9,9 +9,9 @@ from flask_migrate import Migrate
 from datetime import datetime
 from flask_humanize import Humanize
 from functools import wraps
-from algo import predict_cat
+from utils.algo import predict_cat
 from dotenv import load_dotenv
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -21,7 +21,6 @@ humanize = Humanize(app)
 load_dotenv()
 
 HUMANIZE_USE_UTC = True
-
 
 app.secret_key = os.environ.get("SECRET_KEY")
 
@@ -68,7 +67,56 @@ def index():
     # for user in users:
     #     print(user.username)
     pagenum = request.args.get("page", 1, type=int)
-    page = Post.query.paginate(page=pagenum, per_page=10)
+    page = (
+        Post.query.outerjoin(Upvote)  # outerjoin to not discard posts with no upvotes
+        .outerjoin(Comment)
+        .group_by(Post.id)
+        .order_by(desc(db.func.count(Upvote.id) + db.func.count(Comment.id)))
+        .paginate(page=pagenum, per_page=10)
+    )
+    # page = Post.query.paginate(page=pagenum, per_page=10)
+    posts = page.items
+    now = datetime.now()
+    upvoted_posts = []
+    karma = 0
+    if "username" in session:
+        author = User.query.filter_by(username=session["username"]).first()
+
+        # karma of the posts by this user
+        karma = (
+            db.session.query(func.count(Upvote.id))  # counts all the upvotes
+            .join(Post)  # joins upvotes with Post
+            .filter(Post.author_id == author.id)  # get posts by this user
+            .scalar()  # if no found, scalar() returns None
+        ) or 0
+        for post in posts:
+            upvote = Upvote.query.filter_by(
+                post_id=post.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_posts.append(post.id)
+
+    return render_template(
+        "index.html",
+        karma=karma,
+        posts=posts,
+        page=page,
+        now=now,
+        upvoted_posts=upvoted_posts,
+    )
+
+
+@app.route("/new")
+def new():
+    """This view function is for the home page"""
+    # users = User.query.all()
+    # for user in users:
+    #     print(user.username)
+    pagenum = request.args.get("page", 1, type=int)
+    page = Post.query.order_by(desc(Post.created_at)).paginate(
+        page=pagenum, per_page=10
+    )
+    # page = Post.query.paginate(page=pagenum, per_page=10)
     posts = page.items
     now = datetime.now()
     upvoted_posts = []
@@ -104,9 +152,47 @@ def index():
 def topic(cat):
     category = cat.title()
     # posts = Post.query.filter_by(category=category).all()
-    page = Post.query.filter_by(category=category).paginate(page=1, per_page=10)
+    page = (
+        Post.query.outerjoin(Upvote)
+        .outerjoin(Comment)
+        .filter(Post.category == category)
+        .group_by(Post.id)
+        .order_by(desc(db.func.count(Upvote.id) + db.func.count(Comment.id)))
+        .paginate(page=1, per_page=10)
+    )
     posts = page.items
-    print(posts)
+    now = datetime.now()
+    upvoted_posts = []
+    if "username" in session:
+        author = User.query.filter_by(username=session["username"]).first()
+        for post in posts:
+            upvote = Upvote.query.filter_by(
+                post_id=post.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_posts.append(post.id)
+    """This view function is for Category posts page"""
+    return render_template(
+        "topic.html",
+        cat=cat,
+        category=category,
+        posts=posts,
+        page=page,
+        now=now,
+        upvoted_posts=upvoted_posts,
+    )
+
+
+@app.route("/<cat>/new")
+def topicnew(cat):
+    category = cat.title()
+    # posts = Post.query.filter_by(category=category).all()
+    page = (
+        Post.query.filter_by(category=category)
+        .order_by(desc(Post.created_at))
+        .paginate(page=1, per_page=10)
+    )
+    posts = page.items
     now = datetime.now()
     upvoted_posts = []
     if "username" in session:
@@ -247,12 +333,15 @@ def cmntupvote(cmntid):
 @app.route("/submit", methods=["GET", "POST"])
 @login_required
 def submit():
+    """This view function is for the post submit page"""
+
     if request.method == "POST":
         author = User.query.filter_by(username=session["username"]).first()
         title = request.form["title"]
-
         content = request.form["content"]
-        idx = predict_cat(title)
+
+        total = title + " " + content
+        idx = predict_cat(total)
         # print(category_map(idx))
 
         new_post = Post(
@@ -262,13 +351,14 @@ def submit():
         db.session.commit()
         print("Post Added")
         return redirect(url_for("index"))
-    """This view function is for the submit page"""
     return render_template("submit.html")
 
 
 @app.route("/edit/<int:postid>", methods=["GET", "POST"])
 @login_required
 def edit(postid):
+    """This view function is for the post edit page"""
+
     post = Post.query.filter_by(id=postid).first()
     if request.method == "POST":
         author = User.query.filter_by(username=session["username"]).first()
@@ -291,13 +381,13 @@ def edit(postid):
             db.session.commit()
             print("Post Added")
             return redirect(url_for("index"))
-    """This view function is for the submit page"""
     return render_template("edit.html", post=post)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """This view function is for the submit page"""
+    """This view function is for the login page"""
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -334,9 +424,6 @@ def logout():
     session.pop("username", None)
     return redirect(url_for("index"))
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 # html escaping
 # @app.route("/<name>")
