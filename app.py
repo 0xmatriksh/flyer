@@ -55,7 +55,7 @@ def category_map(idx):
     elif idx in [15, 0, 19]:
         return "Social"
     elif idx in [10, 9]:
-        return "Sports"
+        return "Recreation"
     else:
         return "Misc"
 
@@ -103,6 +103,7 @@ def index():
         page=page,
         now=now,
         upvoted_posts=upvoted_posts,
+        new=False,
     )
 
 
@@ -145,6 +146,53 @@ def new():
         page=page,
         now=now,
         upvoted_posts=upvoted_posts,
+        new=True,
+    )
+
+
+@app.route("/search", methods=["GET"])
+def search():
+    """This view function is for the search page"""
+
+    text = request.args.get("searchTxt")
+
+    print(text)
+
+    pagenum = request.args.get("page", 1, type=int)
+    page = Post.query.filter(Post.content.like("%" + text + "%")).paginate(
+        page=pagenum, per_page=10
+    )
+    # page = Post.query.paginate(page=pagenum, per_page=10)
+    posts = page.items
+    print(posts)
+    now = datetime.now()
+    upvoted_posts = []
+    karma = 0
+    if "username" in session:
+        author = User.query.filter_by(username=session["username"]).first()
+
+        # karma of the posts by this user
+        karma = (
+            db.session.query(func.count(Upvote.id))  # counts all the upvotes
+            .join(Post)  # joins upvotes with Post
+            .filter(Post.author_id == author.id)  # get posts by this user
+            .scalar()  # if no found, scalar() returns None
+        ) or 0
+        for post in posts:
+            upvote = Upvote.query.filter_by(
+                post_id=post.id, author_id=author.id
+            ).first()
+            if upvote:
+                upvoted_posts.append(post.id)
+
+    return render_template(
+        "index.html",
+        karma=karma,
+        posts=posts,
+        page=page,
+        now=now,
+        upvoted_posts=upvoted_posts,
+        new=True,
     )
 
 
@@ -152,16 +200,18 @@ def new():
 def topic(cat):
     category = cat.title()
     # posts = Post.query.filter_by(category=category).all()
+    pagenum = request.args.get("page", 1, type=int)
     page = (
         Post.query.outerjoin(Upvote)
         .outerjoin(Comment)
         .filter(Post.category == category)
         .group_by(Post.id)
         .order_by(desc(db.func.count(Upvote.id) + db.func.count(Comment.id)))
-        .paginate(page=1, per_page=10)
+        .paginate(page=pagenum, per_page=10)
     )
     posts = page.items
     now = datetime.now()
+
     upvoted_posts = []
     if "username" in session:
         author = User.query.filter_by(username=session["username"]).first()
@@ -180,6 +230,7 @@ def topic(cat):
         page=page,
         now=now,
         upvoted_posts=upvoted_posts,
+        new=False,
     )
 
 
@@ -211,31 +262,32 @@ def topicnew(cat):
         page=page,
         now=now,
         upvoted_posts=upvoted_posts,
+        new=True,
     )
 
 
 @app.route("/post/<postid>")
-@login_required
 def post(postid):
     """This view function is for Post detail"""
     now = datetime.now()
     upvoted = False
-    author = User.query.filter_by(username=session["username"]).first()
     post = Post.query.filter_by(id=postid).first()
-    upvote = Upvote.query.filter_by(post_id=post.id, author_id=author.id).first()
-    if upvote:
-        upvoted = True
     comments = Comment.query.filter_by(post_id=post.id, parent_id=None).all()
-    allcomments = Comment.query.filter_by(post_id=post.id)
     upvoted_comments = []
     if "username" in session:
         author = User.query.filter_by(username=session["username"]).first()
-        for comment in allcomments:
-            upvote = CommentUpvote.query.filter_by(
-                comment_id=comment.id, author_id=author.id
-            ).first()
-            if upvote:
-                upvoted_comments.append(comment.id)
+        upvote = Upvote.query.filter_by(post_id=post.id, author_id=author.id).first()
+        if upvote:
+            upvoted = True
+        allcomments = Comment.query.filter_by(post_id=post.id)
+        if "username" in session:
+            author = User.query.filter_by(username=session["username"]).first()
+            for comment in allcomments:
+                upvote = CommentUpvote.query.filter_by(
+                    comment_id=comment.id, author_id=author.id
+                ).first()
+                if upvote:
+                    upvoted_comments.append(comment.id)
 
     return render_template(
         "post.html",
@@ -247,7 +299,7 @@ def post(postid):
     )
 
 
-@app.route("/comment/<postid>", methods=["GET", "POST"])
+@app.route("/comment/<postid>", methods=["POST"])
 @login_required
 def comment(postid):
     text = request.form.get("text")
@@ -257,11 +309,14 @@ def comment(postid):
     )
     db.session.add(new_comment)
     db.session.commit()
+
+    print("ffff")
     return redirect(url_for("post", postid=postid))
 
 
 # this is api only can return json
 @app.route("/reply/<post_id>/<parent_id>", methods=["GET", "POST"])
+@login_required
 def reply(post_id, parent_id):
     if request.method == "POST":
         # add this reply to comment from user to database
@@ -296,7 +351,7 @@ def like(postid):
     else:
         print(upvotes)
         print("There is already likes by this user")
-    return redirect(url_for("index"))
+    return redirect(request.referrer)
 
 
 @app.route("/unlike/<postid>")
@@ -311,7 +366,7 @@ def unlike(postid):
     else:
         print(upvote)
         print("There is no upvote by this user, then how can delete, HUH?")
-    return redirect(url_for("index"))
+    return redirect(request.referrer)
 
 
 @app.route("/cmntupvote/<cmntid>")
@@ -329,12 +384,28 @@ def cmntupvote(cmntid):
     return redirect(url_for("index"))
 
 
+@app.route("/cmntunvote/<cmntid>")
+@login_required
+def cmntunvote(cmntid):
+    comment = Comment.query.filter_by(id=cmntid).first()
+    author = User.query.filter_by(username=session["username"]).first()
+    upvotes = CommentUpvote.query.filter_by(comment=comment, author=author).all()
+    if len(upvotes) != 0:
+        db.session.delete(upvotes[0])
+        db.session.commit()
+    else:
+        print(upvotes)
+        print("There is no upvote by this user, then how can delete, HUH?")
+    return redirect(url_for("index"))
+
+
 # this is api only can return json
 @app.route("/submit", methods=["GET", "POST"])
 @login_required
 def submit():
     """This view function is for the post submit page"""
-
+    msg = ""
+    down_msg = ""
     if request.method == "POST":
         author = User.query.filter_by(username=session["username"]).first()
         title = request.form["title"]
@@ -342,22 +413,35 @@ def submit():
 
         total = title + " " + content
         idx = predict_cat(total)
-        # print(category_map(idx))
 
-        new_post = Post(
-            title=title, content=content, author=author, category=category_map(idx)
-        )
-        db.session.add(new_post)
-        db.session.commit()
-        print("Post Added")
-        return redirect(url_for("index"))
-    return render_template("submit.html")
+        if idx != -1:
+
+            # print(category_map(idx))
+
+            new_post = Post(
+                title=title, content=content, author=author, category=category_map(idx)
+            )
+            db.session.add(new_post)
+            db.session.commit()
+
+            down_msg = "Your post is predicted to be of category : {}".format(
+                category_map(idx)
+            )
+            print("Post Added")
+
+        else:
+            msg = "Please describe the post in more detail"
+            print("Post not Added")
+
+    return render_template("submit.html", msg=msg, down_msg=down_msg)
 
 
 @app.route("/edit/<int:postid>", methods=["GET", "POST"])
 @login_required
 def edit(postid):
     """This view function is for the post edit page"""
+    msg = ""
+    down_msg = ""
 
     post = Post.query.filter_by(id=postid).first()
     if request.method == "POST":
@@ -370,18 +454,66 @@ def edit(postid):
             title = request.form["title"]
             content = request.form["content"]
             idx = predict_cat(title)
-            new_post = Post(
-                id=postid,
-                title=title,
-                content=content,
-                author=author,
-                category=category_map(idx),
-            )
-            db.session.add(new_post)
-            db.session.commit()
-            print("Post Added")
-            return redirect(url_for("index"))
+
+            if idx != -1:
+
+                # print(category_map(idx))
+                new_post = Post(
+                    title=title,
+                    content=content,
+                    author=author,
+                    category=category_map(idx),
+                )
+                db.session.add(new_post)
+                db.session.commit()
+
+                down_msg = "Your post is predicted to be of category : {}".format(
+                    category_map(idx)
+                )
+                print("Post Edited")
+
+            else:
+                msg = "Please describe the post in more detail"
+                print("Post not Edited")
+
+            return render_template("submit.html", msg=msg, down_msg=down_msg)
     return render_template("edit.html", post=post)
+
+
+@app.route("/delete/<int:postid>", methods=["GET", "POST"])
+@login_required
+def delete(postid):
+    """This view function is for the post edit page"""
+
+    post = Post.query.filter_by(id=postid).first()
+    if request.method == "POST":
+        author = User.query.filter_by(username=session["username"]).first()
+        if post and post.author == author:
+            db.session.delete(post)
+            db.session.commit()
+
+            print("Post Deleted")
+            return redirect(url_for("index"))
+    return render_template("delete.html", post=post)
+
+
+@app.route("/deletecmnt/<int:cmntid>", methods=["GET", "POST"])
+@login_required
+def deletecmnt(cmntid):
+    """This view function is for the post edit page"""
+
+    comment = Comment.query.filter_by(id=cmntid).first()
+    postid = comment.post_id
+    if request.method == "POST":
+        author = User.query.filter_by(username=session["username"]).first()
+
+        if comment and comment.author == author:
+            db.session.delete(comment)
+            db.session.commit()
+
+            print("Comment Deleted")
+            return redirect(url_for("post", postid=postid))
+    return render_template("delete-cmnt.html", comment=comment)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -405,15 +537,21 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """function to create an account"""
+    err_msg = ""
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        user = User.query.filter_by(username=username).first()
+        if user:
+            err_msg = "Username is taken"
+            return render_template("register.html", err_msg=err_msg)
         password_hash = generate_password_hash(password)
         new_user = User(username=username, password=password_hash)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for("login"))
-    return render_template("register.html")
+    return render_template("register.html", err_msg=err_msg)
 
 
 @app.route("/logout")

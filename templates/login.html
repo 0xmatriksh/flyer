@@ -5,15 +5,39 @@
 {% endblock %}
 
 {% block content %}
-<h2>LOGIN PAGE</h2>
+<h2 style="text-align: center;">LOGIN PAGE</h2>
 
 <form id="user-form" method="POST">
     <label for="username">Username:</label><br>
     <input type="text" id="username" name="username"><br>
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password"><br><br>
-    <input type="submit" id="login-submit" value="Submit">
+    <button onclick="validate()" type="button" id="login-submit">Submit</button>
 </form>
+
+{% if error == True %}
+<h3 style="color:red; text-align: center;">Username/Password is not matching.</h3>
+{% endif %}
+
+
+<script>
+
+    function validate() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        console.log(username)
+        if (username == "") {
+            alert(`Username is empty`);
+        }
+        else if (password == "") {
+            alert(`Password is empty`);
+        }
+        else {
+            document.getElementById("user-form").submit();
+        }
+    }
+
+</script>
 
 
 {% endblock %}

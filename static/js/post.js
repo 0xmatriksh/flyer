@@ -41,14 +41,14 @@ function submitReplyForm(element) {
 
     const formData = new FormData(replyForm);
 
-    const postId = document.getElementById("postId").innerText;
-    const commentId = document.getElementById("commentId").innerText;
 
-    const replyText = document.getElementById("replyText").value;
-    console.log(replyText)
+    const postId = element.querySelector("#postId").innerText;
+    const commentId = element.querySelector("#commentId").innerText;
+
+    const replyText = element.querySelector("#replyText").value;
 
     if (replyText == "") {
-        alert("Cannot comment Empty");
+        alert("Cannot reply Empty");
     }
     else {
         console.log(formData);
@@ -61,7 +61,6 @@ function submitReplyForm(element) {
             .then(data => {
             })
             .catch(error => {
-                console.error('Error:', error);
             });
         location.reload()
     }
@@ -82,7 +81,7 @@ myForm.addEventListener("submit", function (event) {
         console.log(postId)
     }
     else {
-        console.log(formData)
+        // console.log(formData)
         // Send the form data to Flask web app using fetch
         fetch(`/comment/${postId}`, {
             method: 'POST',
@@ -90,11 +89,19 @@ myForm.addEventListener("submit", function (event) {
         })
             .then(response => response.json())
             .then(data => {
+                location.reload();
             })
             .catch(error => {
-                console.error('Error:', error);
             });
-        location.reload()
+
+        function myfunc() {
+            // redirect after commenting
+            console.log('111')
+            location.href = `http://127.0.0.1:5000/post/${postId}`;
+        }
+
+        setTimeout(myfunc, 1000)
     }
+
 })
 

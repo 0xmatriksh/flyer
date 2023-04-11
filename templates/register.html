@@ -5,15 +5,41 @@
 {% endblock %}
 
 {% block content %}
-<h2>REGISTER PAGE</h2>
+<h2 style="text-align: center;">REGISTER PAGE</h2>
 
 
-<form method="POST">
-    <label for="username">Email:</label><br>
+<form id="form" method="POST">
+    <label for="username">Username:</label><br>
     <input type="text" id="username" name="username"><br>
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password"><br><br>
-    <input type="submit" value="Submit">
+    <input onclick="validate()" type="button" value="Submit">
 </form>
+
+{% if err_msg != "" %}
+<h3 style="color:red; text-align: center;">{{err_msg}}</h3>
+{% endif %}
+
+<script>
+
+    function validate() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        console.log(password.length)
+        if (username == "") {
+            alert(`Username cannot be empty`);
+        }
+        else if (password == "") {
+            alert(`Password cannot be empty`);
+        }
+        else if (password.length < 6) {
+            alert(`Password cannot be less than 6`);
+        }
+        else {
+            document.getElementById("form").submit();
+        }
+    }
+
+</script>
 
 {% endblock %}

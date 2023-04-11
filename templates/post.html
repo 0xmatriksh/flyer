@@ -14,11 +14,23 @@
             <a href={{ url_for("cmntupvote", cmntid=comment.id) }} {% if comment.id in upvoted_comments %}
                 disabled="disabled" {% endif %} id="upvote-icon-cmnt"></a>
             <div style="margin-left:10px;" id="author-cmnt">{{comment.author.username}} </div>
+
+            {% if comment.author.username == session.username %}
+            <a href={{ url_for("deletecmnt", cmntid=comment.id) }} id="unvote">delete</a>
+            {% endif %}
+
+
+            {% if comment.id in upvoted_comments %}
+            <a href={{ url_for("cmntunvote", cmntid=comment.id) }} id="unvote">unvote</a>
+            {% endif %}
+
+
             <div id="time-posted" style="margin-left:10px;">{{ (now - comment.created_at)|humanize() }}</div>
         </div>
     </div>
     <div class="comment-body">{{comment.text}}</div>
-    <button data-cmnt={{comment.id}} data-post={{post.id}} class="replybtn" onclick="showReplyFrom(this)">reply</button>
+    <button data-cmnt={{comment.id}} data-post={{post.id}} {% if not session.username %} disabled {% endif %}
+        class="replybtn" onclick="showReplyFrom(this)">reply</button>
     <form onsubmit="submitReplyForm(this)" style="display:none" method="post" class="replyForm"
         action="javascript:void(0);">
         <p id="postId" hidden>{{post.id}}</p>
@@ -53,7 +65,8 @@
     <form action={{ url_for("comment", postid=post.id) }} id="commentForm" method="post">
         <p id="postId" hidden>{{post.id}}</p>
         <textarea id="commentText" name="text" rows="8" cols="80" wrap="virtual"></textarea><br><br>
-        <input type="submit" id="comment-submit" value="add comment">
+        <input type="submit" id="comment-submit" {% if not session.username %} disabled {% endif %} value="add comment">
+        {% if not session.username %}<p style="display: inline; color: grey;">Need to login first</p>{% endif %}
     </form>
 
     <div class="comments">

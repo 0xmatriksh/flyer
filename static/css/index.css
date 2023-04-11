@@ -226,3 +226,21 @@ a[disabled="disabled"] {
 .pagination a:hover {
     text-decoration: underline;
 }
+
+.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+#searchForm {
+    text-align: center;
+}
+
+#searchTxt {
+    border-radius: 2px;
+    font-size: 20px;
+}
+
+#searchBtn {
+    font-size: 20px;
+}

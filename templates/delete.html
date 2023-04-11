@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block titlecontent %}
+<title>Delete Post | Flyer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+<form class="post-form" method="post">
+    <h2>You sure, you want to delete this post?</h2>
+    <label>Title : </label>
+    <input type="text" name="title" value="{{post.title}}"><br><br>
+
+    <label>Content :</label>
+    <textarea rows="7" cols="25" name="content">{{post.content}}</textarea><br><br>
+
+    <button id="delete-btn" type="submit">Delete</button>
+</form>
+
+{% endblock %}

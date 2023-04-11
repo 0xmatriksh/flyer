@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+
 {% block titlecontent %}
 <title>Flyer</title>
 {% endblock %}
@@ -8,10 +9,17 @@
     <div id="menu-section">
         <ul class="navbar-menu">
             <li class="menu"><a class="menu-anchor" href={{ url_for('new') }}>new</a></li> |
-            <li class="menu"><a class="menu-anchor" href="">past</a></li>
+            {% if new == False %}
+            <li class="menu"><a class="menu-anchor" href="{{ url_for('index', page=page.next_num) }}">past</a></li>
+            {% else %}
+            <li class="menu"><a class="menu-anchor" href="{{ url_for('new', page=page.next_num) }}" {% if
+                    page.page==page.pages %} style="visibility: hidden;" {% endif %}>past</a></li>
+            {% endif %}
+
         </ul>
     </div>
 </div>
+
 
 <div class="feed">
     {% for post in posts %}
@@ -20,8 +28,7 @@
             <p>{{loop.index}}.</p>
             <a href={{ url_for("like", postid=post.id) }} {% if post.id in upvoted_posts %} disabled="disabled" {% endif
                 %} id="upvote-icon"></a>
-            <a href={{ url_for("post", postid=post.id) }} id="title">{{post.title}}</a>
-            <div id="src-url">(source)</div>
+            <a href={{ url_for("post", postid=post. id) }} id="title">{{post.title}}</a>
         </div>
         <div id="post-data">
             <div id="upvotes-count">{{post.upvotes|length}} points</div>
@@ -30,8 +37,10 @@
             {% if post.id in upvoted_posts %}
             <a href={{ url_for("unlike", postid=post.id) }} id="unvote">unvote</a>
             {% endif %}
+
             {% if post.author.username == session.username %}
             <a href={{ url_for("edit", postid=post.id) }} id="unvote">edit</a>
+            <a href={{ url_for("delete", postid=post.id) }} id="unvote">delete</a>
             {% endif %}
             <a href={{ url_for("post", postid=post.id) }} id="comments-count">{{post.comments|length}} comments</a>
         </div>
@@ -41,9 +50,21 @@
 
 <!-- Pagination Links-->
 <div class="pagination">
-    <a href="{{ url_for('index', page=page.next_num) }}" class="" {% if page.page==page.pages %} disabled{% endif %}>
+    {% if new == False %}
+    <a href="{{ url_for('index', page=page.next_num) }}" {% if page.page==page.pages %} class="disabled" {% endif %}>
         More
     </a>
+    {% else %}
+    <a href="{{ url_for('new', page=page.next_num) }}" {% if page.page==page.pages %} class="disabled" {% endif %}>
+        More
+    </a>
+    {% endif %}
 </div>
+
+<form id="searchForm" action={{ url_for('search') }} method="get">
+    <!-- <label for="searchTxt">Search:</label> -->
+    <input name="searchTxt" id="searchTxt">
+    <button id="searchBtn">Search</button>
+</form>
 
 {% endblock %}

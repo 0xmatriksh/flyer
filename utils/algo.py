@@ -1,4 +1,4 @@
-from utils.mnb import MultiNB
+# from utils.mnb import MultiNB
 import json
 import string
 import pickle
@@ -16,7 +16,7 @@ allwords = set(nltk.corpus.words.words())
 
 total_documents = 11314
 
-with open("model/count_dict.json", "r") as f:
+with open("../model/count_dict.json", "r") as f:
     word_count = json.load(f)
 # print(len(word_count))
 
@@ -98,22 +98,30 @@ def predict_cat(text):
         f = lem_f(f)
         test_n.append(f)
 
+    for x in test_n:
+        if len(x.split(" ")) < 3:
+            return -1
+
     X_test_v = []
     for sent in test_n:
         vec = tf_idf_(sent.split(" "))
         X_test_v.append(vec)
     X_test_v = np.array(X_test_v)
 
-    with open("model/flyer_pkl2", "rb") as f:
+    with open("../model/flyer_pkl2", "rb") as f:
         nb = pickle.load(f)
 
     predict_test = nb.predict(X_test_v)
+
+    # print(nb.predict_proba(X_test_v))
+    # print(predict_test)
 
     return predict_test[0]
 
     # print(predict_test[0])
     # print(nb.predict_proba)
-    # print(nb.predict_proba(X_test_v))
 
 
-# predict_cat("Stocks fall on Wall Street, giving back some recent gains")
+# predict_cat(
+#     "I love listening music whole day and night and it is effecting my study, what should I do?"
+# )

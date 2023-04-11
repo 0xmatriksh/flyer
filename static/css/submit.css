@@ -56,3 +56,7 @@ button:hover {
 button {
     transition: background-color 0.2s ease-in-out;
 }
+
+#delete-btn {
+    background-color: palevioletred;
+}

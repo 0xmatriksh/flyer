@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block titlecontent %}
+<title>Delete Comment | Flyer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+<form class="post-form" method="post">
+    <h2>You sure, you want to delete the comment?</h2>
+
+    <p>Text Content: {{comment.text}}</p>
+    <p>By username: {{comment.author.username}}</p>
+
+    <button id="delete-btn" type="submit">Delete</button>
+</form>
+
+{% endblock %}
